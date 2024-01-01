@@ -1,11 +1,19 @@
-#include <iostream>
-#include <stdio.h>
 #include "source.h"
+
+void rePaint(graph &g){
+    cleardevice();
+    setbkcolor(WHITE);
+    g.showEdge();
+    g.showPoint();
+    delay_ms(100);
+}
+
 
 bool action(graph &g){
     int option = 0;
-    std::cout<<"1.加点 2.加边 3.退出 4.显示点信息 5.删边"<<std::endl;
+    std::cout<<"1.加点 2.加边 3.退出 4.显示点信息 5.删边 6.删点 7.计算最短路 8.显示周围节点"<<std::endl;
     std::cin>>option;
+    rePaint(g);
     if( option == 1 ){
         int x,y;
         std::cout<<"输入横纵坐标"<<std::endl;
@@ -30,9 +38,29 @@ bool action(graph &g){
         std::cin>>x>>y;
         g.deleteEdge(x,y);
     }
-    cleardevice();
-    g.showPoint();
-    g.showEdge();
+    if( option == 6 ){
+        int x;
+        std::cout<<"输入点编号"<<std::endl;
+        std::cin>>x;
+        g.deletePoint(x);
+    }
+    if( option == 7 ){
+        int x,y;
+        std::cout<<"输入两点编号"<<std::endl;
+        std::cin>>x>>y;
+        g.dijkstra(x,y);
+        // 放置点被线覆盖
+        g.showPoint();
+    }
+    if( option == 8 ){
+        int x;
+        std::cout<<"输入点编号"<<std::endl;
+        std::cin>>x;
+        g.showPointsAround(x);
+    }
+    if( option != 7 && option != 8 ){
+        rePaint(g);
+    }
     delay_ms(100);
     return true;
 }
@@ -46,14 +74,12 @@ int main() {
 
     graph g;
     g.readData("E:\\DS-project\\graph.txt");
-    g.showPoint();
     g.showEdge();
+    g.showPoint();
+    delay_ms(100);
 
     while(action(g));
     
-
-    getch();
-
     closegraph();
     return 0;
 }

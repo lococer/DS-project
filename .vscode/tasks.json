@@ -7,9 +7,11 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}",
+                "E:\\DS-project\\source.h",
+                "E:\\DS-project\\source.cpp",
+                "E:\\DS-project\\main.cpp",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "E:\\DS-project\\main.exe",
                 "-lgraphics64",
                 "-luuid",
                 "-lmsimg32",

@@ -1,6 +1,8 @@
 #include "source.h"
 
-void graph::readData(std::string path = "E:\\DS-project\\graph.txt"){
+void graph::readData(std::string path = "graph.txt"){
+    *this = graph();
+    readPath = path;
     std::ifstream file(path);
     int n,m;file>>n>>m;
     numPoint = n;numedge = m;
@@ -31,7 +33,6 @@ double graph::caldis( int x, int y ){
 }
 
 void graph::showPoint(){
-    // #include <graphics.h>
 
     for( int i = 1 ; i <= numPoint ; i ++ ){
         if( exist[i] == false ) continue;
@@ -74,6 +75,7 @@ void graph::addPoint( int x, int y ){
 }
 
 void graph::addEdge( int x, int y ){
+    if( exist[ x ] == false || exist[ y ] == false ) return;
     e[ x ].push_back({y,caldis(x,y)});
     e[ y ].push_back({x,caldis(x,y)});
     numedge ++;
@@ -138,6 +140,10 @@ void graph::dijkstra( int x, int y ){
             }
         }
     }
+    if( dis[ y ] == 1e9 ){
+        std::cout<<"不存在最短路"<<std::endl;
+        return;
+    }
     std::cout<<"最短距离为"<<dis[y]<<std::endl;
 
     // 画出最短路
@@ -166,3 +172,305 @@ void graph::showPointsAround( int x ){
         outtextxy(pos[y].first-5,pos[y].second-9,s);
     }
 }
+
+graph::graph(){
+    numPoint = numedge = 0;
+    e.resize(1);
+    pos.resize(1);
+    exist.resize(1,false);
+    readPath = "";
+}
+
+void graph::saveFile(std::string path){
+    // 保存图信息到文件
+    // 存储点和边信息，当点不存在时跳过该点，并把后面的点编号减一，边的相应信息也要更新
+    readPath = path;
+    std::ofstream file(path);
+
+    std::vector<int> delt( numPoint + 1 ),delt1;
+    delt1 = delt;
+    for( int i = 1 ; i <= numPoint ; i ++ ){
+        delt[ i ] = delt[ i - 1 ] + ( exist[ i - 1 ] == false );
+    }
+    for( int i = 1 ; i <= numPoint ; i ++ ){
+        delt1[ i ] = delt1[ i - 1 ] + ( exist[ i ] == false );
+    }
+
+    int tnumPoint = numPoint;
+
+    // 遍历每条边，把有关点编号-delt
+    for( int i = 1 ; i <= numPoint ; i ++ ){
+        if( !exist[ i ] ){
+            tnumPoint --;
+            continue;
+        }
+    }
+    numedge = 0;
+    for( int i = 1 ; i <= numPoint ; i ++ ){
+        if( exist[ i ] == false ) continue;
+        
+        std::sort(e[i].begin(),e[i].end());
+        auto erase_begin = std::unique(e[i].begin(),e[i].end());
+        e[i].erase(erase_begin,e[i].end());
+
+        for( int j = 0 ; j < e[ i ].size() ; j ++ ){
+            int y = e[ i ][ j ].first;
+            int x = i - delt1[ i ];
+            y -= delt1[ y ];
+            if( y > x ) numedge++;
+        }
+    }
+    file<<tnumPoint<<" "<<numedge<<std::endl;
+    for( int i = 1 ; i <= numPoint ; i ++ ){
+        if( exist[ i ] == false ) continue;
+        file<<pos[ i ].first<<' '<<pos[ i ].second<<std::endl;
+    }
+
+    for( int i = 1 ; i <= numPoint ; i ++ ){
+        if( exist[ i ] == false ) continue;
+        for( auto &[y,dis] : e[ i ] ){
+            int x = i - delt1[ i ];
+            y = y - delt1[ y ];
+            if( y <= x ) continue;
+            file<<x<<' '<<y<<std::endl;
+        }
+    }
+
+}
+
+void graph::rePaint(){
+    cleardevice();
+    setbkcolor(WHITE);
+    showEdge();
+    showPoint();
+    delay_ms(100);
+}
+
+login::login(){
+    isLogin = false;
+    readData();
+}
+
+void login::readData(){
+    std::ifstream file("userdata.txt");
+    int n;file>>n;
+    for( int i = 1 ; i <= n ; i ++ ){
+        std::string username,password;
+        file>>username>>password;
+        user.push_back({username,password});
+    }
+}
+
+void login::loginIn(){
+    std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+    std::cout<<"请输入用户名和密码"<<std::endl;
+    std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+    std::cin>>username>>password;
+    for( auto i : user ){
+        if( i.first == username && i.second == password ){
+            isLogin = true;
+            std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+            std::cout<<"登录成功"<<std::endl;
+            std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+            return;
+        }
+    }
+    std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+    std::cout<<"用户名或密码错误"<<std::endl;
+    std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+}
+
+void login::registerIn(){
+    std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+    std::cout<<"请输入用户名和密码"<<std::endl;
+    std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+    std::cin>>username>>password;
+    for( auto i : user ){
+        if( i.first == username ){
+            std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+            std::cout<<"用户名已存在"<<std::endl;
+            std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+            return;
+        }
+    }
+    user.push_back({username,password});
+    std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+    std::cout<<"注册成功"<<std::endl;
+    std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+}
+
+void login::saveData(){
+    std::ofstream file("userdata.txt");
+    file<<user.size()<<std::endl;
+    for( auto i : user ){
+        file<<i.first<<' '<<i.second<<std::endl;
+    }
+}
+
+void login::showUser(){
+    for( auto i : user ){
+        std::cout<<i.first<<' '<<i.second<<std::endl;
+    }
+}
+
+bool login::getIsLogin(){
+    return isLogin;
+}
+
+std::string login::getUsername(){
+    return username;
+}
+
+void login::logout(){
+    isLogin = false;
+    username = "";
+    password = "";
+}
+
+
+// solve类
+solve::solve(){
+    isLogin = false;
+    username = "";
+}
+
+void solve::run(){
+    initgraph(700, 700, 0);
+    setbkcolor(WHITE);
+    while( true ){
+        if( !isLogin ){
+            std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+            std::cout<<"1.登录 2.注册 3.退出"<<std::endl;
+            std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+            int option;
+            std::cin>>option;
+            if( option == 1 ){
+                l.loginIn();
+                if( l.getIsLogin() ){
+                    isLogin = true;
+                    username = l.getUsername();
+                }
+            }
+            if( option == 2 ){
+                l.registerIn();
+                if( l.getIsLogin() ){
+                    isLogin = true;
+                    username = l.getUsername();
+                }
+            }
+            if( option == 3 ){
+                l.saveData();
+                return;
+            }
+        }else{
+            std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+            std::cout<<"1.读入地图 2.空地图 3.添加点 4.添加边 5.显示点位置 6.删除边 7.删除点 8.最短路 9.显示点周围点 10.保存地图 11.退出登录"<<std::endl;
+            std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+            std::string option;
+            std::cin>>option;
+            g.rePaint();
+            bool legal = 0;
+            if( option == "1" ){
+                legal = 1;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cout<<"输入路径"<<std::endl;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::string path;
+                std::cin>>path;
+                g.readData(path);
+            }
+            if( option == "2" ){
+                legal = 1;
+                g = graph();
+            }
+            if( option == "3" ){
+                legal = 1;
+                int x,y;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cout<<"输入点位置"<<std::endl;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cin>>x>>y;
+                g.addPoint(x,y);
+            }
+            if( option == "4" ){
+                legal = 1;
+                int x,y;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cout<<"输入两点编号"<<std::endl;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cin>>x>>y;
+                g.addEdge(x,y);
+            }
+            if( option == "5" ){
+                legal = 1;
+                g.showPointPostion();
+            }
+            if( option == "6" ){
+                legal = 1;
+                int x,y;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cout<<"输入两点编号"<<std::endl;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cin>>x>>y;
+                g.deleteEdge(x,y);
+            }
+            if( option == "7" ){
+                legal = 1;
+                int x;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cout<<"输入点编号"<<std::endl;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cin>>x;
+                g.deletePoint(x);
+            }
+            if( option == "8" ){
+                legal = 1;
+                int x,y;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cout<<"输入两点编号"<<std::endl;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cin>>x>>y;
+                g.dijkstra(x,y);
+                // 放置点被线覆盖
+                g.showPoint();
+            }
+            if( option == "9" ){
+                legal = 1;
+                int x;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cout<<"输入点编号"<<std::endl;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cin>>x;
+                g.showPointsAround(x);
+            }
+            if( option == "10" ){
+                legal = 1;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cout<<"请输入保存路径"<<std::endl;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::string path;
+                std::cin>>path;
+                g.saveFile(path);
+                g.readData(path);
+            }
+            if( option == "11" ){
+                legal = 1;
+                l.saveData();
+                l.logout();
+                isLogin = false;
+                username = "";
+            }
+            if( option != "8" && option != "9" ){
+                g.rePaint();
+            }
+            delay_ms(100);
+            if( !legal ){
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cout<<"输入错误"<<std::endl;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+            }
+        }
+    }
+    closegraph();
+}
+

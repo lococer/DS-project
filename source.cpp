@@ -309,7 +309,8 @@ void login::saveData(){
 
 void login::showUser(){
     for( auto i : user ){
-        std::cout<<i.first<<' '<<i.second<<std::endl;
+        static int cnt = 0;
+        std::cout<<++cnt<<". "<<i.first<<std::endl;
     }
 }
 
@@ -327,7 +328,6 @@ void login::logout(){
     password = "";
 }
 
-
 // solve类
 solve::solve(){
     isLogin = false;
@@ -340,27 +340,40 @@ void solve::run(){
     while( true ){
         if( !isLogin ){
             std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-            std::cout<<"1.登录 2.注册 3.退出"<<std::endl;
+            std::cout<<"1.登录 2.注册 3.列出已有用户 4.退出"<<std::endl;
             std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-            int option;
+            std::string option;
             std::cin>>option;
-            if( option == 1 ){
+            bool legal = 0;
+            if( option == "1" ){
+                legal = 1;
                 l.loginIn();
                 if( l.getIsLogin() ){
                     isLogin = true;
                     username = l.getUsername();
                 }
             }
-            if( option == 2 ){
+            if( option == "2" ){
+                legal = 1;
                 l.registerIn();
                 if( l.getIsLogin() ){
                     isLogin = true;
                     username = l.getUsername();
                 }
             }
-            if( option == 3 ){
+            if( option == "3" ){
+                legal = 1;
+                l.showUser();
+            }
+            if( option == "4" ){
+                legal = 1;
                 l.saveData();
                 return;
+            }
+            if( !legal ){
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
+                std::cout<<"输入错误"<<std::endl;
+                std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
             }
         }else{
             std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;

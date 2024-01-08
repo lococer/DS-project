@@ -3,16 +3,16 @@
         {
             "type": "cppbuild",
             "label": "C/C++: g++.exe 生成活动文件",
-            // "command": "D:\\mingw64\\bin\\g++.exe",
-            "command": "C:\\Program Files\\mingw64\\bin\\g++.exe",
+            "command": "E:\\mingw64\\bin\\g++.exe",
+            // "command": "C:\\Program Files\\mingw64\\bin\\g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "D:\\DS-project\\source.h",
-                "D:\\DS-project\\source.cpp",
-                "D:\\DS-project\\main.cpp",
+                "E:\\DS-project\\source.h",
+                "E:\\DS-project\\source.cpp",
+                "E:\\DS-project\\main.cpp",
                 "-o",
-                "D:\\DS-project\\main.exe",
+                "E:\\DS-project\\main.exe",
                 "-lgraphics64",
                 "-luuid",
                 "-lmsimg32",
@@ -25,8 +25,8 @@
                 "-std=c++17",
             ],
             "options": {
-                // "cwd": "D:\\mingw64\\bin"
-                "cwd": "C:\\Program Files\\mingw64\\bin"
+                "cwd": "E:\\mingw64\\bin"
+                // "cwd": "C:\\Program Files\\mingw64\\bin"
             },
             "problemMatcher": [
                 "$gcc"

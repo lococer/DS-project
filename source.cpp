@@ -400,18 +400,24 @@ void solve::run(){
                 legal = 1;
                 int x,y;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cout<<"输入点位置"<<std::endl;
+                std::cout<<"选取点位置"<<std::endl;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cin>>x>>y;
+
+                auto pos = getMouse();
+                x = pos.first;y = pos.second;
+
                 g.addPoint(x,y);
             }
             if( option == "4" ){
                 legal = 1;
                 int x,y;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cout<<"输入两点编号"<<std::endl;
+                std::cout<<"选取两点"<<std::endl;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cin>>x>>y;
+                x = getPointChosen(g);
+                std::cout<<"已选取第一个点编号:"<<x<<'\n';
+                y = getPointChosen(g);
+                std::cout<<"已选取第二个点编号:"<<y<<'\n';
                 g.addEdge(x,y);
             }
             if( option == "5" ){
@@ -424,7 +430,10 @@ void solve::run(){
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
                 std::cout<<"输入两点编号"<<std::endl;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cin>>x>>y;
+                x = getPointChosen(g);
+                std::cout<<"已选取第一个点编号:"<<x<<'\n';
+                y = getPointChosen(g);
+                std::cout<<"已选取第二个点编号:"<<y<<'\n';
                 g.deleteEdge(x,y);
             }
             if( option == "7" ){
@@ -433,7 +442,8 @@ void solve::run(){
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
                 std::cout<<"输入点编号"<<std::endl;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cin>>x;
+                // std::cin>>x;
+                x = getPointChosen(g);
                 g.deletePoint(x);
             }
             if( option == "8" ){
@@ -442,7 +452,10 @@ void solve::run(){
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
                 std::cout<<"输入两点编号"<<std::endl;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cin>>x>>y;
+                x = getPointChosen(g);
+                std::cout<<"已选取第一个点编号:"<<x<<'\n';
+                y = getPointChosen(g);
+                std::cout<<"已选取第二个点编号:"<<y<<'\n';
                 g.dijkstra(x,y);
                 // 放置点被线覆盖
                 g.showPoint();
@@ -453,7 +466,8 @@ void solve::run(){
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
                 std::cout<<"输入点编号"<<std::endl;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cin>>x;
+                // std::cin>>x;
+                x = getPointChosen(g);
                 g.showPointsAround(x);
             }
             if( option == "10" ){
@@ -487,3 +501,38 @@ void solve::run(){
     closegraph();
 }
 
+std::pair<int,int> solve::getMouse(){
+    mouse_msg msg;
+    for( ;is_run() ; delay_fps(60) ){
+        while( mousemsg() ){
+            msg = getmouse();
+        }
+        if( msg.is_down() ){
+            return {msg.x, msg.y};
+        }
+    }
+    return {0,0};
+}
+
+int solve::getPointChosen( graph &g ){
+    mouse_msg msg;
+    for( ;is_run() ; delay_fps(10) ){
+        while( mousemsg() ){
+            msg = getmouse();
+        }
+        if( msg.is_down() ){
+            return g.getPointChosen(msg.x,msg.y);
+        }
+    }
+    return 0;
+}
+
+int graph::getPointChosen(int x, int y){
+    for( int i = 1 ; i <= numPoint ; i ++ ){
+        if( exist[i] == false ) continue;
+        if( abs( pos[i].first - x ) <= 10 && abs( pos[i].second - y ) <= 10 ){
+            return i;
+        }
+    }
+    return 0;
+}

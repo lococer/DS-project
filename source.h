@@ -48,6 +48,7 @@ public:
     void showPointsAround( int x );
     void saveFile(std::string path);
     void rePaint();
+    int getPointChosen(int x, int y);
 };
 
 // login类，能从当前目录下的userdata.txt 读取用户名和密码，实现登录和注册功能
@@ -79,4 +80,6 @@ private:
 public:
     solve();
     void run();
+    std::pair<int,int> getMouse();
+    int getPointChosen(graph &g );
 };

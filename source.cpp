@@ -1,5 +1,7 @@
 #include "source.h"
 
+#define MBLUE EGERGB(0x65, 0xAB, 0xEC)
+
 void graph::readData(std::string path = "graph.txt"){
     *this = graph();
     readPath = path;
@@ -59,9 +61,32 @@ void graph::showEdge(){
         if( exist[i] == false ) continue;
         for( int j = 0 ; j < e[i].size() ; j ++ ){
             int x = i , y = e[i][j].first;
-            setcolor(BLACK);
+            setcolor(MBLUE);
             setlinestyle(PS_SOLID, 1 , 5);
             line(pos[x].first,pos[x].second,pos[y].first,pos[y].second);
+
+            int midx = pos[x].first + pos[y].first >> 1;
+            int midy = pos[x].second + pos[y].second >> 1;
+
+            // setcolor(BLUE);
+            // setcolor(BLACK);
+            // setfont(15,0,"宋体");
+            // char s[10];
+            // sprintf(s,"%.2f",e[i][j].second);
+            // outtextxy(midx, midy, s);
+        }
+    }
+    for( int i = 1 ; i <= numPoint ; i ++ ){
+        if( exist[ i ] == false ) continue;
+        for( int j = 0; j < e[ i ].size() ; j ++ ){
+            int x = i, y = e[i][j].first;
+            setcolor(BLACK);
+            setfont(15,0,"宋体");
+            char s[10];
+            sprintf(s,"%.2f",e[i][j].second);
+            int midx = pos[x].first + pos[y].first >> 1;
+            int midy = pos[x].second + pos[y].second >> 1;
+            outtextxy(midx, midy, s);
         }
     }
 }
@@ -154,7 +179,22 @@ void graph::dijkstra( int x, int y ){
         }
         now = pre[now];
     }
+    showPoint();
 
+    now = y;
+    while( now != -1 ){
+        setcolor(RED);
+        setfillcolor(RED);
+        fillellipse(pos[now].first,pos[now].second,10,10);
+
+        setcolor(BLACK);
+        setfont(20,0,"宋体");
+        char s[10];
+        sprintf(s,"%d",now);
+        outtextxy(pos[now].first-5, pos[now].second-9, s);
+
+        now = pre[ now ];
+    }   
 }
 
 void graph::showPointsAround( int x ){
@@ -233,7 +273,6 @@ void graph::saveFile(std::string path){
             file<<x<<' '<<y<<std::endl;
         }
     }
-
 }
 
 void graph::rePaint(){
@@ -456,7 +495,7 @@ void solve::run(){
                 std::cout<<"已选取第二个点编号:"<<y<<'\n';
                 g.dijkstra(x,y);
                 // 放置点被线覆盖
-                g.showPoint();
+                // g.showPoint();
             }
             if( option == "9" ){
                 legal = 1;

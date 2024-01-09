@@ -25,7 +25,6 @@ void graph::readData(std::string path = "graph.txt"){
 
 }
 
-
 double graph::caldis( int x, int y ){
     double disx = abs( pos[x].first - pos[y].first );
     double disy = abs( pos[x].second - pos[y].second );
@@ -119,7 +118,6 @@ void graph::deletePoint( int x ){
 }
 
 void graph::dijkstra( int x, int y ){
-    
     std::priority_queue<std::pair<int,double>> q;
     std::vector<double> dis( numPoint + 1 , 1e9 );
     std::vector<bool> vis( numPoint + 1 , false );
@@ -428,7 +426,7 @@ void solve::run(){
                 legal = 1;
                 int x,y;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cout<<"输入两点编号"<<std::endl;
+                std::cout<<"选取两点"<<std::endl;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
                 x = getPointChosen(g);
                 std::cout<<"已选取第一个点编号:"<<x<<'\n';
@@ -440,7 +438,7 @@ void solve::run(){
                 legal = 1;
                 int x;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cout<<"输入点编号"<<std::endl;
+                std::cout<<"选取点"<<std::endl;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
                 // std::cin>>x;
                 x = getPointChosen(g);
@@ -450,7 +448,7 @@ void solve::run(){
                 legal = 1;
                 int x,y;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cout<<"输入两点编号"<<std::endl;
+                std::cout<<"选取两点"<<std::endl;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
                 x = getPointChosen(g);
                 std::cout<<"已选取第一个点编号:"<<x<<'\n';
@@ -464,7 +462,7 @@ void solve::run(){
                 legal = 1;
                 int x;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
-                std::cout<<"输入点编号"<<std::endl;
+                std::cout<<"选取点"<<std::endl;
                 std::cout<<std::setfill('*')<<std::setw(30)<<""<<std::endl;
                 // std::cin>>x;
                 x = getPointChosen(g);

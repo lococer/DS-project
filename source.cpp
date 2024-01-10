@@ -283,6 +283,13 @@ void graph::rePaint(){
     delay_ms(100);
 }
 
+bool graph::existEdge(int x, int y ){
+    for( auto i : e[ x ] ){
+        if( i.first == y ) return true;
+    }
+    return false;
+}
+
 login::login(){
     isLogin = false;
     readData();
@@ -455,7 +462,11 @@ void solve::run(){
                 std::cout<<"已选取第一个点编号:"<<x<<'\n';
                 y = getPointChosen(g);
                 std::cout<<"已选取第二个点编号:"<<y<<'\n';
-                g.addEdge(x,y);
+                if( g.existEdge(x, y ) ){
+                    std::cout<<"边已存在\n";   
+                }else{
+                    g.addEdge(x,y);
+                }
             }
             if( option == "5" ){
                 legal = 1;
@@ -471,7 +482,11 @@ void solve::run(){
                 std::cout<<"已选取第一个点编号:"<<x<<'\n';
                 y = getPointChosen(g);
                 std::cout<<"已选取第二个点编号:"<<y<<'\n';
-                g.deleteEdge(x,y);
+                if( !g.existEdge(x, y ) ){
+                    std::cout<<"不存在边\n";   
+                }else{
+                    g.deleteEdge(x,y);
+                }
             }
             if( option == "7" ){
                 legal = 1;

@@ -49,6 +49,7 @@ public:
     void saveFile(std::string path);
     void rePaint();
     int getPointChosen(int x, int y);
+    bool existEdge( int x , int y );
 };
 
 // login类，能从当前目录下的userdata.txt 读取用户名和密码，实现登录和注册功能
